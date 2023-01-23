@@ -36,6 +36,19 @@ export default function Chat() {
   }, [currentUser]);
 
   useEffect(() => {
+    if (socket.current) {
+      socket.current.on("new-user", (data) => {
+        if (!contacts.map((contact) => contact._id).includes(data.userId)) {
+          setContacts((prev) => [
+            ...prev,
+            { username: data.username, _id: data.userId },
+          ]);
+        }
+      });
+    }
+  }, [contacts, socket]);
+
+  useEffect(() => {
     const fetchData = async () => {
       const data = await axios.get(`${allUsersRoute}/${currentUser._id}`);
       setContacts(data.data);

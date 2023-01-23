@@ -33,6 +33,10 @@ module.exports.register = async (req, res, next) => {
       password: hashedPassword,
     });
     delete user.password;
+    global.io.emit("new-user", {
+      username: user.username,
+      userId: user.id,
+    });
     return res.json({ status: true, user });
   } catch (ex) {
     next(ex);
